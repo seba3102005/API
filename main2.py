@@ -2,22 +2,34 @@ import requests
 from PIL import Image
 from io import BytesIO
 
+def show_menu():
+    print("1)cats photos\n2)random images\n3)nature images")
+    
+
 def validation(choice ,available_choices):
-    while choice not in available_choices:
-        choice= input("please enter a valid coice")
+    if available_choices == ['y','n']:
+        while choice.lower() not in available_choices:
+            choice= input("please enter a valid coice(y/n): ")
+
+    else:
+        while choice.lower() not in available_choices:
+            choice= input(f"please enter a valid coice from {available_choices[0]}-{available_choices[len(available_choices)-1]}: ")
+    
     return choice
 
 
-
-
-
-choice1 = input("1)cats photos\n2)random images\n3)nature images")
+show_menu()
+choice1 = input()
 available_inputs = ['1','2','3']
 
+
 while choice1 not in available_inputs:
-    choice1 = input("please enter a valid input (1,2)")
-
-
+    show_menu()
+    choice1 = input("please enter a valid input (1,2,3)")
+    
+print()
+print('-'*50)
+print()
 if choice1 =='1':
     cat_url = "https://api.thecatapi.com/v1/images/search?limit=10&breed_ids=beng&api_key=live_7OOoNwadKl2OS20H6U2hTpEaK5PgxdSclD8ngrJOzHMeRV3gFVfSTOtY0avnR87d"
     response = requests.get(cat_url)
@@ -35,23 +47,30 @@ if choice1 =='1':
     try:
         for image in data:
             i+=1
-            print(f"image {i}")
-            print(image['url'])
-            choice = input("do you want to save the photo(y/n): ")
+            print()
+            print(f"<ID: > image {i}")
+            print("<THE PHOTO'S URL: >",image['url'])
+            print()
+            choice = input("do you want to open the photo(y/n): ")
             availabe_choices = ['y','n']
             choice = validation(choice,availabe_choices)
             if choice.lower() =='y':
-
-                response1 = requests.get(image['url'])
-                response1.raise_for_status()
-                with open(f'image{i}.jpg' , 'wb') as file:
-                    file .write(response1.content)
-                choice4 = input('the photo us saved successfully do you want to open it(y/n): ')
+                
+                response = requests.get(image['url'])
+                response.raise_for_status()
+                image = Image.open(BytesIO(response.content))
+                image.show()
+                choice4 = input('do you want to save the photo(y/n): ')
+                choice4 = choice4.lower()
                 choice4 = validation(choice4,['y','n'])
 
                 if choice4=='y':
-                    image = Image.open(f'image{i}.jpg')
-                    image.show()
+                    with open(f'cat_image{i}.jpg' , 'wb') as file:
+                        file .write(response.content)
+                    print('the photo is saved succussefully')
+                
+                
+                    
                 
             
             if i == int(no_photos):
@@ -67,37 +86,37 @@ elif choice1=='2':
     response = requests.get(images_url)
     response.raise_for_status()
     data = response.json()
-    photos_num = input("please enter a number between 1-30")
+    photos_num = input("please enter a number between 1-30: ")
     photos_num = validation(choice=photos_num,available_choices=[str(i) for i in range(1,31)])
     i=0
     try:
         for image in data:
             i+=1
+            print()
             print('<ID: >',int(image['id'])+1)
             print("<THE PHOTO'S URL: >",image['download_url'])
-            choice3 = input('do you want to save the photo(y/n): ')
+            print()
+            choice3 = input('do you want to open the photo(y/n): ')
+            choice3 = choice3.lower()
             choice3 = validation(choice3 , ['y','n'])
             
             if choice3 == 'y':
                
                 response = requests.get(image['download_url'])
                 response.raise_for_status()
-
-                with open(f'random_image{i}.jpg','wb') as file:
-                    file.write(response.content)
-                choice5 = input('do you want to open the photo (y/n)')
+                
+                image = Image.open(BytesIO(response.content))
+                image.show()
+                choice5 = input('do you want to save the photo (y/n): ')
                 choice5 = validation(choice5,['y','n'])
                 if choice5.lower() =='y':
-                    image = Image.open(f'random_image{i}.jpg')
-                    image.show()
-
+                    with open(f'random_image{i}.jpg','wb') as file:
+                        file.write(response.content)
+                
             if i==int(photos_num):
                 break
                 
-
-
-
-            
+ 
     except:
         print('error')
 
@@ -118,10 +137,13 @@ elif choice1=='3':
     try:
         for image in data["photos"]:
             i+=1
-            print(f'image {i}')
-            print(image["src"]["original"])
-            print(image['alt'])
+            print()
+            print(f'<ID: > image {i}')
+            print("<THE PHOTO'S URL: >",image["src"]["original"])
+            print("image's description: ",image['alt'])
+            print()
             choice6 = input("do you want to open the photo(y/n): ")
+            choice6 = choice6.lower()
             choice6 = validation(choice6,['y','n'])
 
             if choice6 =='y':
