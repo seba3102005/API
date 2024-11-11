@@ -1,5 +1,6 @@
 import requests
 from PIL import Image
+from io import BytesIO
 
 def validation(choice ,available_choices):
     while choice not in available_choices:
@@ -10,8 +11,8 @@ def validation(choice ,available_choices):
 
 
 
-choice1 = input("1)cats photos\n2)random images")
-available_inputs = ['1','2']
+choice1 = input("1)cats photos\n2)random images\n3)nature images")
+available_inputs = ['1','2','3']
 
 while choice1 not in available_inputs:
     choice1 = input("please enter a valid input (1,2)")
@@ -101,5 +102,46 @@ elif choice1=='2':
         print('error')
 
 
+elif choice1=='3':
+    url = "https://api.pexels.com/v1/search?query=nature&per_page=80"
+
+    headers={'Authorization':'4eIn56IGbmehglN4shDw02ufpYIFmd1pkN63gEVuHeK0h7FtrnuZS3sY'}
+
+    response = requests.get(url ,headers=headers)
+    response.raise_for_status()
+    data = response.json()
+    # print (len(data['photos']))
+    choice10 = input('enter the number of nature photo that you want: ')
+    choice10 = validation(choice10 , [str(i) for i in range(1,81)])
+
+    i=0
+    try:
+        for image in data["photos"]:
+            i+=1
+            print(f'image {i}')
+            print(image["src"]["original"])
+            print(image['alt'])
+            choice6 = input("do you want to open the photo(y/n): ")
+            choice6 = validation(choice6,['y','n'])
+
+            if choice6 =='y':
+                response = requests.get(image['src']['original'])
+                response.raise_for_status()
+            
+                image = Image.open(BytesIO(response.content))
+                image.show()
+                image.close()
+                choice7 = input("do you want the saved photo(y/n): ")
+                choice7 = validation(choice7,['y','n'])
+                if choice7=='y':
+                    with open(f'nature_image{i}.jpg','wb') as file:
+                        file.write(response.content)
+                
+            if i==int(choice10):
+                break
+    except:
+        print('error')
+
+    
 
 
