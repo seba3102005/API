@@ -14,8 +14,14 @@ api_key = live_7OOoNwadKl2OS20H6U2hTpEaK5PgxdSclD8ngrJOzHMeRV3gFVfSTOtY0avnR87d
 
 # how to use the program:
 
-you have 3 choices of API's (cat images ,nature images , random images) you pick the choice that you want to choose 
-you enter the number of photos that you want to take from this api
-then the number of the image and its url will appear
-if you want to open the image you enter y other wise enter n and the the images will continue to appear until the needed number of images will ends
-if you entered 
+* a menu will show with 4 choices  (cat images ,nature images , random images ,Exit) you pick the choice that you want to choose 
+* you enter the number of photos that you want to take from this api
+* then the number of the image and it's url will appear
+* if you want to open the image you enter 'y' otherwise enter 'n' and the the images will continue to appear until the needed number of images ends
+* if you opened the photo you will be asked if you want to save it or not
+* after all of that the photo will be saved as (opened without saving or saved or not opened ) in a json file
+* then the menu will show again
+
+# Program's flowchart:
+
+![Simple Basic Flowchart Diagram](https://github.com/user-attachments/assets/4dbac019-2311-4432-9c70-7422769c76ce)
