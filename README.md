@@ -1,7 +1,7 @@
 # The used APIs
 ## pexels API:(the API key is put in header and it requires authorization)
 -Documentation->https://www.pexels.com/api/documentation/
-api_key = 4eIn56IGbmehglN4shDw02ufpYIFmd1pkN63gEVuHeK0h7FtrnuZS3sY
+API_key = 4eIn56IGbmehglN4shDw02ufpYIFmd1pkN63gEVuHeK0h7FtrnuZS3sY
 
 ## picsum API:(doesn't require an API key)
 -Documentation->https://picsum.photos/v2/list
