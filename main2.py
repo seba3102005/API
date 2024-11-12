@@ -2,6 +2,9 @@ import requests
 from PIL import Image
 from io import BytesIO
 import time
+import json
+
+json_data = {}
 
 def show_menu():
     print("1)cats photos\n2)random images\n3)nature images\n4)Exit")
@@ -59,11 +62,6 @@ def failed_requests(func,retries=3):
 
 
 
-
-
-
-
-
 @time_taken_request  
 @failed_requests
 def make_request(url ,headers):
@@ -90,8 +88,14 @@ def make_request(url ,headers):
             raise
     
     
+with open('data.json','r') as file:
+    try:
+        json_data = json.load(file)
+    except:
+        print('error in reading the file')
+    
 
-   
+
 
 while True:
     show_menu()
@@ -112,11 +116,11 @@ while True:
             continue
         
 
+
         no_photos = input("input the number of photos that you want in range 1-10: ")
         available_no = [str(i) for i in range(1,11)]
         no_photos = validation(no_photos,available_no)
-        print(f"no of photos: {no_photos}")
-
+        
         flag2 = False
         i =0
         
@@ -126,12 +130,14 @@ while True:
                 for j in range(5):
 
                 
-                    print ('oooooooooooo')
                     i+=1
                     print()
                     print(f"<ID: > image {i}")
                     print("<THE PHOTO'S URL: >",image[indx]['url'])
                     print()
+
+                    
+
                     choice = input("do you want to open the photo(y/n): ")
                     availabe_choices = ['y','n']
                     choice = validation(choice,availabe_choices)
@@ -139,8 +145,8 @@ while True:
                 
                         response = requests.get(image[indx]['url'])
                         response.raise_for_status()
-                        image = Image.open(BytesIO(response.content))
-                        image.show()
+                        image2 = Image.open(BytesIO(response.content))
+                        image2.show()
                         choice4 = input('do you want to save the photo(y/n): ')
                         choice4 = choice4.lower()
                         choice4 = validation(choice4,['y','n'])
@@ -149,11 +155,18 @@ while True:
                             with open(f'cat_image{i}.jpg' , 'wb') as file:
                                 file .write(response.content)
                             print('the photo is saved succussefully')
+                            json_data[image[indx]['url']]=f'saved_cat_image{i}.jpg'
+
+                        elif choice4=='n':
+                            json_data[image[indx]['url']]=f'opened_cat_image{i}.jpg'
+                    
+                    elif choice =='n':
+                        json_data[image[indx]['url']]=f'NotOpened_cat_image{i}.jpg'
                 
                 
                     
                 
-                    print(i)
+                    
                     if i == int(no_photos):
                         flag2=True
                         break
@@ -165,7 +178,6 @@ while True:
         except requests.RequestException as e:
             print("An error occurred while fetching the image:", e)
             
-
 
 
     elif choice1=='2':
@@ -183,7 +195,7 @@ while True:
             for image in generator(data):
                 indx = 0
                 for j in range(5):
-                    print (image)
+                    
                     i+=1
                     print()
                     print('<ID: >',int(image[indx]['id'])+1)
@@ -198,14 +210,23 @@ while True:
                         response = requests.get(image[indx]['download_url'])
                         response.raise_for_status()
                 
-                        image = Image.open(BytesIO(response.content))
-                        image.show()
+                        image2 = Image.open(BytesIO(response.content))
+                        image2.show()
                         choice5 = input('do you want to save the photo (y/n): ')
                         choice5 = validation(choice5,['y','n'])
                         choice5 = choice5.lower()
                         if choice5 =='y':
                             with open(f'random_image{i}.jpg','wb') as file:
                                 file.write(response.content)
+                            json_data[image[indx]['url']]=f'saved_random_image{i}.jpg'
+
+                        elif choice4=='n':
+                            json_data[image[indx]['url']]=f'opened_random_image{i}.jpg'
+                    
+                    elif choice3 =='n':
+                        json_data[image[indx]['url']]=f'NotOpened_random_image{i}.jpg'
+                
+                
                 
                     if i==int(photos_num):
                         flag2=True
@@ -254,15 +275,24 @@ while True:
                         response = requests.get(image[indx]['src']['original'])
                         response.raise_for_status()
             
-                        image = Image.open(BytesIO(response.content))
-                        image.show()
-                        image.close()
+                        image2 = Image.open(BytesIO(response.content))
+                        image2.show()
+                        image2.close()
                         choice7 = input("do you want the saved photo(y/n): ")
                         choice7 = validation(choice7,['y','n'])
                         choice7 = choice7.lower()
                         if choice7=='y':
                             with open(f'nature_image{i}.jpg','wb') as file:
                                 file.write(response.content)
+                            json_data[image[indx]['url']]=f'saved_nature_image{i}.jpg'
+
+                        elif choice4=='n':
+                            json_data[image[indx]['url']]=f'opened_nature_image{i}.jpg'
+                    
+                    elif choice6 =='n':
+                        json_data[image[indx]['url']]=f'NotOpened_nature_image{i}.jpg'
+                
+                
                 
                     if i==int(choice10):
                         flag2 =True
@@ -276,9 +306,14 @@ while True:
 
 
     elif choice1 == '4':
+        with open('data.json','w') as file:
+            json.dump(json_data,file)
         print ("exitting the program")
         break
 
+    for i in json_data:
+        print(i)
+        print(json_data[i])
 
 
 
