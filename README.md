@@ -1,4 +1,4 @@
-# the used API's
+# The used APIs
 ## pexels API:(the api key is put in header and it requires authorization)
 -Documentation->https://www.pexels.com/api/documentation/
 api_key = 4eIn56IGbmehglN4shDw02ufpYIFmd1pkN63gEVuHeK0h7FtrnuZS3sY
